@@ -23,3 +23,22 @@ CREATE TABLE Personas (
     FOREIGN KEY (Id_Estado) REFERENCES Estados(Id_Estado)
 );
 
+--- editar persona
+DELIMITER //
+CREATE PROCEDURE SP_EditarPersona(
+    IN PersonaId INT,
+    IN Apellido VARCHAR(50),
+    IN Nombres VARCHAR(50),
+    IN DNI VARCHAR(20),
+    IN Domicilio VARCHAR(100),
+    IN Telefono VARCHAR(20),
+    IN FecHora_Modificacion DATETIME
+)
+BEGIN
+    UPDATE Personas
+    SET Apellido = Apellido, Nombres = Nombres, DNI = DNI, Domicilio = Domicilio, 
+        Telefono = Telefono, FecHora_Modificacion = FecHora_Modificacion
+    WHERE Id = PersonaId;
+END //
+DELIMITER ;
+--- fin editar persona

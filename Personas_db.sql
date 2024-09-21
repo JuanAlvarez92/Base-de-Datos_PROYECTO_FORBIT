@@ -23,3 +23,14 @@ CREATE TABLE Personas (
     FOREIGN KEY (Id_Estado) REFERENCES Estados(Id_Estado)
 );
 
+-- Consultar Persona
+DELIMITER //
+CREATE PROCEDURE SP_ConsultaPersona ()
+BEGIN
+    SELECT Id, Apellido, Nombres, DNI, Domicilio, Telefono, FecHora_Registro, FecHora_Modificacion
+    FROM Personas
+    WHERE Id_Estado = 1; -- Solo las personas activas
+END //
+DELIMITER ;
+-- Fin consultar Persona
+

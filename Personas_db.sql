@@ -22,4 +22,16 @@ CREATE TABLE Personas (
     FecHora_Modificacion DATETIME,
     FOREIGN KEY (Id_Estado) REFERENCES Estados(Id_Estado)
 );
+/* Este linea de codigo permite realizar la baja logica en el servidor*/
+DELIMITER $$
+CREATE PROCEDURE SP_EliminarPersona (
+    IN p_Id INT
+)
+BEGIN
+    UPDATE Personas
+    SET Id_Estado = 2,
+        FecHora_Modificacion = CURRENT_TIMESTAMP
+    WHERE Id = p_Id;
+END $$
+DELIMITER ;
 

@@ -35,3 +35,22 @@ BEGIN
 END $$
 DELIMITER ;
 
+-- Crear Procedimiento Almacenado para registrar una persona
+DELIMITER //
+
+CREATE PROCEDURE SP_RegistroPersona (
+    IN p_Apellido VARCHAR(50),
+    IN p_Nombres VARCHAR(50),
+    IN p_DNI VARCHAR(20),
+    IN p_Domicilio VARCHAR(100),
+    IN p_Telefono VARCHAR(20),
+    IN p_Id_Estado INT
+)
+BEGIN
+    INSERT INTO Personas (Apellido, Nombres, DNI, Domicilio, Telefono, Id_Estado, FecHora_Registros)
+    VALUES (p_Apellido, p_Nombres, p_DNI, p_Domicilio, p_Telefono, p_Id_Estado, NOW());
+END //
+
+DELIMITER ;
+
+

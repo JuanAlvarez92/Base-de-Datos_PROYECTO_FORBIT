@@ -84,3 +84,18 @@ BEGIN
 END //
 DELIMITER ;
 --- fin editar persona
+
+--  SP_ConsultaPersonalike: permitirá obtener los Datos de personas mediante LIKE en el atributo Apellido (@Apellido). 
+
+CREATE PROCEDURE SP_ConsultaPersonalike (
+    IN p_Apellido VARCHAR(50)
+)
+BEGIN
+    SELECT Id, Apellido, Nombres, DNI, Domicilio, Telefono, FecHora_Registros, FecHora_Modificacion
+    FROM Personas
+    WHERE Apellido LIKE CONCAT('%', p_Apellido, '%') 
+      AND Id_Estado = 1; -- Solo personas activas
+END //
+
+DELIMITER ;
+--- fin --  SP_ConsultaPersonalike:

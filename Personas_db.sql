@@ -83,4 +83,15 @@ BEGIN
     WHERE Id = PersonaId;
 END //
 DELIMITER ;
+
 --- fin editar persona
+---consulta persona---
+DELIMITER //
+CREATE PROCEDURE SP_ConsultaPersonaDNI(
+    IN DNI_Persona VARCHAR(20)
+)
+BEGIN
+    SELECT * FROM Personas
+    WHERE DNI = DNI_Persona;
+END //
+DELIMITER ;

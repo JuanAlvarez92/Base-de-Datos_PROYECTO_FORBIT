@@ -95,3 +95,28 @@ BEGIN
     WHERE DNI = DNI_Persona;
 END //
 DELIMITER ;
+
+---consulta persona id---
+DELIMITER //
+
+CREATE PROCEDURE SP_ConsultaPersonaID (
+    IN p_Id INT
+)
+BEGIN
+    SELECT 
+        Id,
+        Apellido,
+        Nombres,
+        DNI,
+        Domicilio,
+        Telefono,
+        Id_Estado,
+        FecHora_Registro,
+        FecHora_Modificacion
+    FROM 
+        Personas
+    WHERE 
+        Id = p_Id;
+END //
+---fin consulta persona id---
+DELIMITER ;

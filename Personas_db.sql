@@ -136,3 +136,35 @@ BEGIN
 END //
 ---fin consulta persona id---
 DELIMITER ;
+
+-- Tabla Licencias
+CREATE TABLE Licencias (
+    Id_Licencia INT PRIMARY KEY AUTO_INCREMENT,
+    Id_Persona INT,
+    Fecha_Creacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    Nro_Art VARCHAR(20),
+    Codigo VARCHAR(20),
+    Diagnostico VARCHAR(255),
+    Medico VARCHAR(50),
+    Matricula VARCHAR(20),
+    Establecimiento VARCHAR(50),
+    Fecha_de_inicio DATE,
+    Fecha_de_fin DATE,
+    Cant_dias_licencias INT,
+    Id_Estado_Licencia INT,
+    Id_Estado_Registro INT DEFAULT 1,
+    Observaciones VARCHAR(255),
+    FOREIGN KEY (Id_Persona) REFERENCES Personas(Id_Persona)
+);
+
+-- Tabla Estados_Licencia
+CREATE TABLE Estados_Licencia (
+    Id_Estado_Licencia INT PRIMARY KEY AUTO_INCREMENT,
+    Descripcion VARCHAR(255)
+);
+
+-- Tabla Estados_Registro
+CREATE TABLE Estados_Registro (
+    Id_Estado_Registro INT PRIMARY KEY AUTO_INCREMENT,
+    Descripcion VARCHAR(255)
+);

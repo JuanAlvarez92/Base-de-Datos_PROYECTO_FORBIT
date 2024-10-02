@@ -177,7 +177,7 @@ CREATE TABLE Usuarios (
     Apellido VARCHAR(50),
     Nombres VARCHAR(50),
     Password VARCHAR(32),
-    Id_Tipo_Usuario INT,
+    Id_Tipo_Usuario INT DEFAULT 3,
     FecHora_Registros TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FecHora_Modificacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     Id_Estado_Registro INT DEFAULT 1

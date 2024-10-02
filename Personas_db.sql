@@ -181,3 +181,68 @@ CREATE TABLE Estados_Registro (
     Id_Estado_Registro INT PRIMARY KEY AUTO_INCREMENT,
     Descripcion VARCHAR(255)
 );
+
+
+-- Procedimientos almacenados : Tabla Licencias
+DELIMITER $$
+CREATE PROCEDURE SP_AgregarLicencia (
+    IN p_Id_Persona INT, 
+    IN p_Nro_Art VARCHAR(20), 
+    IN p_Codigo VARCHAR(20), 
+    IN p_Diagnostico TEXT, 
+    IN p_Medico VARCHAR(50), 
+    IN p_Matricula VARCHAR(20), 
+    IN p_Establecimiento VARCHAR(50),
+    IN p_Fecha_de_inicio DATE, 
+    IN p_Fecha_de_fin DATE, 
+    IN p_Cant_dias_licencias INT,
+    IN p_Id_Estado_Licencia INT, 
+    IN p_Observaciones TEXT
+)
+BEGIN
+    INSERT INTO Licencias (Id_Persona, Nro_Art, Codigo, Diagnostico, Medico, Matricula, Establecimiento, Fecha_de_inicio, Fecha_de_fin, Cant_dias_licencias, Id_Estado_Licencia, Observaciones) 
+    VALUES (p_Id_Persona, p_Nro_Art, p_Codigo, p_Diagnostico, p_Medico, p_Matricula, p_Establecimiento, p_Fecha_de_inicio, p_Fecha_de_fin, p_Cant_dias_licencias, p_Id_Estado_Licencia, p_Observaciones);
+END $$
+DELIMITER ;
+
+
+DELIMITER $$
+CREATE PROCEDURE SP_ConsultaLicenciaID (IN p_Id_Licencia INT)
+BEGIN
+    SELECT * FROM Licencias WHERE Id_Licencia = p_Id_Licencia;
+END $$
+DELIMITER ;
+
+
+DELIMITER $$
+CREATE PROCEDURE SP_EliminarLicencia (IN p_Id_Licencia INT)
+BEGIN
+    UPDATE Licencias SET Id_Estado_Registro = 2 WHERE Id_Licencia = p_Id_Licencia;
+END $$
+DELIMITER ;
+
+
+DELIMITER $$
+CREATE PROCEDURE SP_ModificarLicencia (
+    IN p_Id_Licencia INT,
+    IN p_Nro_Art VARCHAR(20), 
+    IN p_Codigo VARCHAR(20), 
+    IN p_Diagnostico TEXT, 
+    IN p_Medico VARCHAR(50), 
+    IN p_Matricula VARCHAR(20), 
+    IN p_Establecimiento VARCHAR(50),
+    IN p_Fecha_de_inicio DATE, 
+    IN p_Fecha_de_fin DATE, 
+    IN p_Cant_dias_licencias INT,
+    IN p_Id_Estado_Licencia INT, 
+    IN p_Observaciones TEXT
+)
+BEGIN
+    UPDATE Licencias
+    SET Nro_Art = p_Nro_Art, Codigo = p_Codigo, Diagnostico = p_Diagnostico, Medico = p_Medico, Matricula = p_Matricula, 
+        Establecimiento = p_Establecimiento, Fecha_de_inicio = p_Fecha_de_inicio, Fecha_de_fin = p_Fecha_de_fin, 
+        Cant_dias_licencias = p_Cant_dias_licencias, Id_Estado_Licencia = p_Id_Estado_Licencia, Observaciones = p_Observaciones,
+        FecHora_Modificacion = CURRENT_TIMESTAMP
+    WHERE Id_Licencia = p_Id_Licencia;
+END $$
+DELIMITER ;

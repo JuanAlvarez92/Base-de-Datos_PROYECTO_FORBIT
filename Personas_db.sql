@@ -11,16 +11,29 @@ INSERT INTO Estados (Id_Estado, Descripcion) VALUES
 (2, 'Inactivo');
 
 CREATE TABLE Personas (
-    Id INT AUTO_INCREMENT PRIMARY KEY,
-    Apellido VARCHAR(50),
-    Nombres VARCHAR(50),
+    Id_Persona INT PRIMARY KEY AUTO_INCREMENT,
+    Apellido VARCHAR(100),
+    Nombres VARCHAR(100),
     DNI VARCHAR(20),
-    Domicilio VARCHAR(100),
+    Domicilio VARCHAR(255),
+    Fecha_Nac DATE,
     Telefono VARCHAR(20),
-    Id_Estado INT,
-    FecHora_Registros DATETIME,
-    FecHora_Modificacion DATETIME,
-    FOREIGN KEY (Id_Estado) REFERENCES Estados(Id_Estado)
+    FecHora_Registros DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FecHora_Modificacion DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    Edad INT,
+    Genero VARCHAR(50),
+    Antiguedad INT,
+    Email VARCHAR(100),
+    Id_Reparticion INT,
+    Id_Estado_Registro INT DEFAULT 1
+);
+
+-- Tabla Repartición
+CREATE TABLE Reparticion (
+    Id_Reparticion INT PRIMARY KEY AUTO_INCREMENT,
+    Nombres VARCHAR(100),
+    Descripcion VARCHAR(255),
+    Id_Estado_Registro INT DEFAULT 1
 );
 /* Este linea de codigo permite realizar la baja logica en el servidor*/
 DELIMITER $$

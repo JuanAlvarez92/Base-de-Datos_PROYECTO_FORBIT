@@ -181,3 +181,27 @@ CREATE TABLE Estados_Registro (
     Id_Estado_Registro INT PRIMARY KEY AUTO_INCREMENT,
     Descripcion VARCHAR(255)
 );
+
+-- Tabla Usuarios
+CREATE TABLE Usuarios (
+    Id_Usuario INT PRIMARY KEY AUTO_INCREMENT,
+    Apellido VARCHAR(50),
+    Nombres VARCHAR(50),
+    Password VARCHAR(32),
+    Id_Tipo_Usuario INT DEFAULT 3,
+    FecHora_Registros TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FecHora_Modificacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    Id_Estado_Registro INT DEFAULT 1
+);
+
+-- Tabla Tipo_Usuarios
+CREATE TABLE Tipo_Usuarios (
+    Id_Tipo_Usuario INT PRIMARY KEY,
+    Descripcion VARCHAR(50)
+);
+
+-- Insertar valores por defecto en Tipo_Usuarios
+INSERT INTO Tipo_Usuarios (Id_Tipo_Usuario, Descripcion) VALUES
+(1, 'Administrador'),
+(2, 'Supervisor'),
+(3, 'Usuario');

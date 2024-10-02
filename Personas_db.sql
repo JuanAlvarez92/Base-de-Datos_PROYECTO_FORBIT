@@ -168,3 +168,41 @@ CREATE TABLE Estados_Registro (
     Id_Estado_Registro INT PRIMARY KEY AUTO_INCREMENT,
     Descripcion VARCHAR(255)
 );
+
+-- Procedimiento para agregar repartición
+CREATE PROCEDURE SP_AgregarReparticion(
+    IN p_Nombres VARCHAR(100),
+    IN p_Descripcion VARCHAR(255)
+)
+BEGIN
+    INSERT INTO Reparticion (Nombres, Descripcion)
+    VALUES (p_Nombres, p_Descripcion);
+END;
+
+-- Procedimiento para consultar repartición por ID
+CREATE PROCEDURE SP_ConsultaReparticionID(IN p_Id_Reparticion INT)
+BEGIN
+    SELECT * FROM Reparticion WHERE Id_Repart
+    
+-- Procedimiento para eliminar repartición (cambiar estado a inactivo)
+CREATE PROCEDURE SP_EliminarReparticion(IN p_Id_Reparticion INT)
+BEGIN
+    UPDATE Reparticion 
+    SET Id_Estado_Registro = 2, 
+        FecHora_Modificacion = CURRENT_TIMESTAMP
+    WHERE Id_Reparticion = p_Id_Reparticion;
+END;
+
+-- Procedimiento para modificar repartición
+CREATE PROCEDURE SP_ModificarReparticion(
+    IN p_Id_Reparticion INT,
+    IN p_Nombres VARCHAR(100),
+    IN p_Descripcion VARCHAR(255)
+)
+BEGIN
+    UPDATE Reparticion
+    SET Nombres = p_Nombres,
+        Descripcion = p_Descripcion,
+        FecHora_Modificacion = CURRENT_TIMESTAMP
+    WHERE Id_Reparticion = p_Id_Reparticion;
+END;

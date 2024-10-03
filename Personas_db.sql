@@ -149,6 +149,74 @@ BEGIN
 END //
 ---fin consulta persona id---
 DELIMITER ;
+-- Procedimientos Almacenados para la Tabla Personas:
+DELIMITER $$
+CREATE PROCEDURE SP_AgregarPersona (
+    IN p_Apellido VARCHAR(50), 
+    IN p_Nombres VARCHAR(50), 
+    IN p_DNI VARCHAR(10), 
+    IN p_Domicilio VARCHAR(100),
+    IN p_Fecha_Nac DATE, 
+    IN p_Telefono VARCHAR(15), 
+    IN p_Edad INT, 
+    IN p_Genero VARCHAR(10),
+    IN p_Antiguedad INT,
+    IN p_Email VARCHAR(100),
+    IN p_Id_Reparticion INT
+)
+BEGIN
+    INSERT INTO Personas (
+        Apellido, Nombres, DNI, Domicilio, Fecha_Nac, Telefono, Edad, Genero, Antiguedad, Email, Id_Reparticion, FecHora_Registros, Id_Estado_Registro
+    ) 
+    VALUES (
+        p_Apellido, p_Nombres, p_DNI, p_Domicilio, p_Fecha_Nac, p_Telefono, p_Edad, p_Genero, p_Antiguedad, p_Email, p_Id_Reparticion, CURRENT_TIMESTAMP, 1
+    );
+END $$
+DELIMITER ;
+
+-- Procedimientos Almacenados para la Tabla Personas:
+DELIMITER $$
+CREATE PROCEDURE SP_ConsultaPersonaID (IN p_Id_Persona INT)
+BEGIN
+    SELECT * FROM Personas WHERE Id_Persona = p_Id_Persona;
+END $$
+DELIMITER ;
+
+-- Procedimientos Almacenados para la Tabla Personas:
+DELIMITER $$
+CREATE PROCEDURE SP_EliminarPersona (IN p_Id_Persona INT)
+BEGIN
+    UPDATE Personas 
+    SET Id_Estado_Registro = 2, FecHora_Modificacion = CURRENT_TIMESTAMP 
+    WHERE Id_Persona = p_Id_Persona;
+END $$
+DELIMITER ;
+
+-- Procedimientos Almacenados para la Tabla Personas:
+DELIMITER $$
+CREATE PROCEDURE SP_ModificarPersona (
+    IN p_Id_Persona INT,
+    IN p_Apellido VARCHAR(50), 
+    IN p_Nombres VARCHAR(50), 
+    IN p_DNI VARCHAR(10), 
+    IN p_Domicilio VARCHAR(100),
+    IN p_Fecha_Nac DATE, 
+    IN p_Telefono VARCHAR(15), 
+    IN p_Edad INT, 
+    IN p_Genero VARCHAR(10),
+    IN p_Antiguedad INT,
+    IN p_Email VARCHAR(100),
+    IN p_Id_Reparticion INT
+)
+BEGIN
+    UPDATE Personas
+    SET Apellido = p_Apellido, Nombres = p_Nombres, DNI = p_DNI, Domicilio = p_Domicilio, 
+        Fecha_Nac = p_Fecha_Nac, Telefono = p_Telefono, Edad = p_Edad, Genero = p_Genero, 
+        Antiguedad = p_Antiguedad, Email = p_Email, Id_Reparticion = p_Id_Reparticion, 
+        FecHora_Modificacion = CURRENT_TIMESTAMP
+    WHERE Id_Persona = p_Id_Persona;
+END $$
+DELIMITER ;
 
 -- Tabla Licencias
 CREATE TABLE Licencias (

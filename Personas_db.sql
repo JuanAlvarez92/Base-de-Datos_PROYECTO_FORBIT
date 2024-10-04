@@ -169,6 +169,9 @@ CREATE TABLE Estados_Registro (
     Descripcion VARCHAR(255)
 );
 
+ALTER TABLE Reparticion
+ADD COLUMN FecHora_Modificacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP;
+
 -- Procedimiento para agregar repartición
 CREATE PROCEDURE SP_AgregarReparticion(
     IN p_Nombres VARCHAR(100),

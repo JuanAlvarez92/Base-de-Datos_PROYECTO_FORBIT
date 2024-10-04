@@ -193,7 +193,6 @@ CREATE PROCEDURE SP_EliminarReparticion(IN p_Id_Reparticion INT)
 BEGIN
     UPDATE Reparticion 
     SET Id_Estado_Registro = 2, 
-        FecHora_Modificacion = CURRENT_TIMESTAMP
     WHERE Id_Reparticion = p_Id_Reparticion;
 END;
 
@@ -207,6 +206,5 @@ BEGIN
     UPDATE Reparticion
     SET Nombres = p_Nombres,
         Descripcion = p_Descripcion,
-        FecHora_Modificacion = CURRENT_TIMESTAMP
     WHERE Id_Reparticion = p_Id_Reparticion;
 END;

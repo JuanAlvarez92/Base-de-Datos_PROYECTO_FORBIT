@@ -182,7 +182,8 @@ END;
 -- Procedimiento para consultar repartición por ID
 CREATE PROCEDURE SP_ConsultaReparticionID(IN p_Id_Reparticion INT)
 BEGIN
-    SELECT * FROM Reparticion WHERE Id_Repart
+    SELECT * FROM Reparticion WHERE Id_Reparticion = p_Id_Reparticion; 
+END;
     
 -- Procedimiento para eliminar repartición (cambiar estado a inactivo)
 CREATE PROCEDURE SP_EliminarReparticion(IN p_Id_Reparticion INT)

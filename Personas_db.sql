@@ -341,30 +341,6 @@ BEGIN
 END $$
 DELIMITER ;
 
-DELIMITER $$
-CREATE PROCEDURE SP_ModificarLicencia (
-    IN p_Id_Licencia INT,
-    IN p_Nro_Art VARCHAR(20), 
-    IN p_Codigo VARCHAR(20), 
-    IN p_Diagnostico TEXT, 
-    IN p_Medico VARCHAR(50), 
-    IN p_Matricula VARCHAR(20), 
-    IN p_Establecimiento VARCHAR(50),
-    IN p_Fecha_de_inicio DATE, 
-    IN p_Fecha_de_fin DATE, 
-    IN p_Cant_dias_licencias INT,
-    IN p_Id_Estado_Licencia INT, 
-    IN p_Observaciones TEXT
-)
-BEGIN
-    UPDATE Licencias
-    SET Nro_Art = p_Nro_Art, Codigo = p_Codigo, Diagnostico = p_Diagnostico, Medico = p_Medico, Matricula = p_Matricula, 
-        Establecimiento = p_Establecimiento, Fecha_de_inicio = p_Fecha_de_inicio, Fecha_de_fin = p_Fecha_de_fin, 
-        Cant_dias_licencias = p_Cant_dias_licencias, Id_Estado_Licencia = p_Id_Estado_Licencia, Observaciones = p_Observaciones
-    WHERE Id_Licencia = p_Id_Licencia;
-END $$
-DELIMITER ;
-
 -- Tabla Tipo_Usuarios debe ser creada antes de Usuarios
 CREATE TABLE Tipo_Usuarios (
     Id_Tipo_Usuario INT PRIMARY KEY,

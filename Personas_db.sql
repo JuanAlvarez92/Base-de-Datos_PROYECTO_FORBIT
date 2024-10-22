@@ -1,8 +1,9 @@
+DROP DATABASE IF EXISTS Personas_db;
 CREATE DATABASE Personas_db;
 USE Personas_db;
 
 -- Tabla Estados
-CREATE TABLE Estados (
+CREATE TABLE IF NOT EXISTS Estados (
     Id_Estado INT PRIMARY KEY,
     Descripcion VARCHAR(50)
 );
@@ -12,7 +13,7 @@ INSERT INTO Estados (Id_Estado, Descripcion) VALUES
 (2, 'Inactivo');
 
 -- Tabla Personas
-CREATE TABLE Personas (
+CREATE TABLE IF NOT EXISTS Personas (
     Id_Persona INT PRIMARY KEY AUTO_INCREMENT,
     Apellido VARCHAR(100),
     Nombres VARCHAR(100),
@@ -27,19 +28,27 @@ CREATE TABLE Personas (
     Antiguedad INT,
     Email VARCHAR(100),
     Id_Reparticion INT,
-    Id_Estado_Registro INT DEFAULT 1
+    Id_Estado_Registro INT DEFAULT 1,
+    FOREIGN KEY (Id_Estado_Registro) REFERENCES Estados(Id_Estado)
 );
 
--- Tabla Repartición
-CREATE TABLE Reparticion (
+-- Tabla Reparticion
+CREATE TABLE IF NOT EXISTS Reparticion (
     Id_Reparticion INT PRIMARY KEY AUTO_INCREMENT,
     Nombres VARCHAR(100),
     Descripcion VARCHAR(255),
-    Id_Estado_Registro INT DEFAULT 1
+    Id_Estado_Registro INT DEFAULT 1,
+    FOREIGN KEY (Id_Estado_Registro) REFERENCES Estados(Id_Estado)
+);
+
+-- Tabla Estados_Licencia
+CREATE TABLE IF NOT EXISTS Estados_Licencia (
+    Id_Estado_Licencia INT PRIMARY KEY AUTO_INCREMENT,
+    Descripcion VARCHAR(255)
 );
 
 -- Tabla Licencias
-CREATE TABLE Licencias (
+CREATE TABLE IF NOT EXISTS Licencias (
     Id_Licencia INT PRIMARY KEY AUTO_INCREMENT,
     Id_Persona INT,
     Fecha_Creacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -55,23 +64,21 @@ CREATE TABLE Licencias (
     Id_Estado_Licencia INT,
     Id_Estado_Registro INT DEFAULT 1,
     Observaciones VARCHAR(255),
-    FOREIGN KEY (Id_Persona) REFERENCES Personas(Id_Persona)
+    FOREIGN KEY (Id_Persona) REFERENCES Personas(Id_Persona),
+    FOREIGN KEY (Id_Estado_Registro) REFERENCES Estados(Id_Estado),
+    FOREIGN KEY (Id_Estado_Licencia) REFERENCES Estados_Licencia(Id_Estado_Licencia)
 );
 
--- Tabla Estados_Licencia
-CREATE TABLE Estados_Licencia (
-    Id_Estado_Licencia INT PRIMARY KEY AUTO_INCREMENT,
-    Descripcion VARCHAR(255)
-);
+
 
 -- Tabla Estados_Registro
-CREATE TABLE Estados_Registro (
+CREATE TABLE IF NOT EXISTS Estados_Registro (
     Id_Estado_Registro INT PRIMARY KEY AUTO_INCREMENT,
     Descripcion VARCHAR(255)
 );
 
 -- Tabla Tipo_Usuarios
-CREATE TABLE Tipo_Usuarios (
+CREATE TABLE IF NOT EXISTS Tipo_Usuarios (
     Id_Tipo_Usuario INT PRIMARY KEY,
     Descripcion VARCHAR(50)
 );
@@ -83,7 +90,7 @@ INSERT INTO Tipo_Usuarios (Id_Tipo_Usuario, Descripcion) VALUES
 (3, 'Usuario');
 
 -- Tabla Usuarios
-CREATE TABLE Usuarios (
+CREATE TABLE IF NOT EXISTS Usuarios (
     Id_Usuario INT PRIMARY KEY AUTO_INCREMENT,
     Apellido VARCHAR(50),
     Nombres VARCHAR(50),
@@ -92,7 +99,8 @@ CREATE TABLE Usuarios (
     FecHora_Registros TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FecHora_Modificacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     Id_Estado_Registro INT DEFAULT 1, 
-    FOREIGN KEY (Id_Tipo_Usuario) REFERENCES Tipo_Usuarios (Id_Tipo_Usuario)
+    FOREIGN KEY (Id_Tipo_Usuario) REFERENCES Tipo_Usuarios (Id_Tipo_Usuario),
+    FOREIGN KEY (Id_Estado_Registro) REFERENCES Estados(Id_Estado)
 );
 
 -- Procedimiento para eliminar persona
@@ -107,39 +115,39 @@ END $$
 DELIMITER ;
 
 -- Procedimiento para registrar una persona
-DELIMITER //
+DELIMITER $$
 CREATE PROCEDURE SP_RegistroPersona (
-    IN p_Apellido VARCHAR(50),
-    IN p_Nombres VARCHAR(50),
+    IN p_Apellido VARCHAR(100),
+    IN p_Nombres VARCHAR(100),
     IN p_DNI VARCHAR(20),
-    IN p_Domicilio VARCHAR(100),
+    IN p_Domicilio VARCHAR(255),
     IN p_Telefono VARCHAR(20),
     IN p_Id_Estado INT
 )
 BEGIN
     INSERT INTO Personas (Apellido, Nombres, DNI, Domicilio, Telefono, Id_Estado_Registro, FecHora_Registros)
     VALUES (p_Apellido, p_Nombres, p_DNI, p_Domicilio, p_Telefono, p_Id_Estado, NOW());
-END //
+END $$
 DELIMITER ;
 
--- Consultar Persona
-DELIMITER //
-CREATE PROCEDURE SP_ConsultaPersona ()
+-- Procedimiento para consultar personas activas
+DELIMITER $$
+CREATE PROCEDURE SP_ConsultaPersona()
 BEGIN
     SELECT Id_Persona, Apellido, Nombres, DNI, Domicilio, Telefono, FecHora_Registros, FecHora_Modificacion
     FROM Personas
-    WHERE Id_Estado_Registro = 1; -- Solo las personas activas
-END //
+    WHERE Id_Estado_Registro = 1; -- Solo personas activas
+END $$
 DELIMITER ;
 
--- Procedimiento para editar persona
-DELIMITER //
+-- Procedimiento para editar una persona
+DELIMITER $$
 CREATE PROCEDURE SP_EditarPersona(
     IN PersonaId INT,
-    IN p_Apellido VARCHAR(50),
-    IN p_Nombres VARCHAR(50),
+    IN p_Apellido VARCHAR(100),
+    IN p_Nombres VARCHAR(100),
     IN p_DNI VARCHAR(20),
-    IN p_Domicilio VARCHAR(100),
+    IN p_Domicilio VARCHAR(255),
     IN p_Telefono VARCHAR(20)
 )
 BEGIN
@@ -147,35 +155,35 @@ BEGIN
     SET Apellido = p_Apellido, Nombres = p_Nombres, DNI = p_DNI, Domicilio = p_Domicilio, 
         Telefono = p_Telefono, FecHora_Modificacion = CURRENT_TIMESTAMP
     WHERE Id_Persona = PersonaId;
-END //
+END $$
 DELIMITER ;
 
--- Procedimiento para buscar persona por apellido
-DELIMITER //
+-- Procedimiento para buscar persona por apellido (LIKE)
+DELIMITER $$
 CREATE PROCEDURE SP_ConsultaPersonalike (
-    IN p_Apellido VARCHAR(50)
+    IN p_Apellido VARCHAR(100)
 )
 BEGIN
     SELECT Id_Persona, Apellido, Nombres, DNI, Domicilio, Telefono, FecHora_Registros, FecHora_Modificacion
     FROM Personas
     WHERE Apellido LIKE CONCAT('%', p_Apellido, '%') 
       AND Id_Estado_Registro = 1; -- Solo personas activas
-END //
+END $$
 DELIMITER ;
 
--- Consulta persona por DNI
-DELIMITER //
+-- Procedimiento para consultar persona por DNI
+DELIMITER $$
 CREATE PROCEDURE SP_ConsultaPersonaDNI(
     IN DNI_Persona VARCHAR(20)
 )
 BEGIN
     SELECT * FROM Personas
     WHERE DNI = DNI_Persona;
-END //
+END $$
 DELIMITER ;
 
--- Consulta persona por ID
-DELIMITER //
+-- Procedimiento para consultar persona por ID
+DELIMITER $$
 CREATE PROCEDURE SP_ConsultaPersonaID (
     IN p_Id INT
 )
@@ -194,7 +202,7 @@ BEGIN
         Personas
     WHERE 
         Id_Persona = p_Id;
-END //
+END $$
 DELIMITER ;
 
 -- Procedimiento para agregar repartición
@@ -245,7 +253,7 @@ BEGIN
 END $$
 DELIMITER ;
 
--- Procedimientos para Licencias
+-- Procedimiento para agregar licencia
 DELIMITER $$
 CREATE PROCEDURE SP_AgregarLicencia (
     IN p_Id_Persona INT, 
@@ -262,107 +270,7 @@ CREATE PROCEDURE SP_AgregarLicencia (
     IN p_Observaciones TEXT
 )
 BEGIN
-    INSERT INTO Licencias (Id_Persona, Nro_Art, Codigo, Diagnostico, Medico, Matricula, Establecimiento, Fecha_de_inicio, Fecha_de_fin, Cant_dias_licencias, Id_Estado_Licencia, Observaciones) 
+    INSERT INTO Licencias (Id_Persona, Nro_Art, Codigo, Diagnostico, Medico, Matricula, Establecimiento, Fecha_de_inicio, Fecha_de_fin, Cant_dias_licencias, Id_Estado_Licencia, Observaciones)
     VALUES (p_Id_Persona, p_Nro_Art, p_Codigo, p_Diagnostico, p_Medico, p_Matricula, p_Establecimiento, p_Fecha_de_inicio, p_Fecha_de_fin, p_Cant_dias_licencias, p_Id_Estado_Licencia, p_Observaciones);
 END $$
 DELIMITER ;
-
--- Procedimiento para consultar licencias activas por persona
-DELIMITER $$
-CREATE PROCEDURE SP_ConsultaLicenciasPorPersona (IN p_Id_Persona INT)
-BEGIN
-    SELECT * FROM Licencias
-    WHERE Id_Persona = p_Id_Persona
-    AND Id_Estado_Registro = 1; -- Solo licencias activas
-END $$
-DELIMITER ;
-
--- Procedimiento para eliminar licencia (cambiar estado a inactivo)
-DELIMITER $$
-CREATE PROCEDURE SP_EliminarLicencia(IN p_Id_Licencia INT)
-BEGIN
-    UPDATE Licencias 
-    SET Id_Estado_Registro = 2  -- Cambiar a inactivo
-    WHERE Id_Licencia = p_Id_Licencia;
-END $$
-DELIMITER ;
-
--- Procedimiento para modificar licencia
-DELIMITER $$
-CREATE PROCEDURE SP_ModificarLicencia(
-    IN p_Id_Licencia INT,
-    IN p_Nro_Art VARCHAR(20), 
-    IN p_Codigo VARCHAR(20), 
-    IN p_Diagnostico TEXT, 
-    IN p_Medico VARCHAR(50), 
-    IN p_Matricula VARCHAR(20), 
-    IN p_Establecimiento VARCHAR(50),
-    IN p_Fecha_de_inicio DATE, 
-    IN p_Fecha_de_fin DATE, 
-    IN p_Cant_dias_licencias INT,
-    IN p_Id_Estado_Licencia INT, 
-    IN p_Observaciones TEXT
-)
-BEGIN
-    UPDATE Licencias
-    SET 
-        Nro_Art = p_Nro_Art,
-        Codigo = p_Codigo,
-        Diagnostico = p_Diagnostico,
-        Medico = p_Medico,
-        Matricula = p_Matricula,
-        Establecimiento = p_Establecimiento,
-        Fecha_de_inicio = p_Fecha_de_inicio,
-        Fecha_de_fin = p_Fecha_de_fin,
-        Cant_dias_licencias = p_Cant_dias_licencias,
-        Id_Estado_Licencia = p_Id_Estado_Licencia,
-        Observaciones = p_Observaciones,
-        FecHora_Modificacion = CURRENT_TIMESTAMP  -- Actualizar la fecha de modificación
-    WHERE Id_Licencia = p_Id_Licencia;
-END $$
-DELIMITER ;
-
--- Procedimiento para consultar todas las licencias
-DELIMITER $$
-CREATE PROCEDURE SP_ConsultaLicencias()
-BEGIN
-    SELECT * FROM Licencias
-    WHERE Id_Estado_Registro = 1; -- Solo licencias activas
-END $$
-DELIMITER ;
-
--- Procedimiento para consultar licencias por ID
-DELIMITER $$
-CREATE PROCEDURE SP_ConsultaLicenciaPorID (IN p_Id_Licencia INT)
-BEGIN
-    SELECT * FROM Licencias 
-    WHERE Id_Licencia = p_Id_Licencia 
-    AND Id_Estado_Registro = 1; -- Solo licencias activas
-END $$
-DELIMITER ;
-
--- Tabla Tipo_Usuarios debe ser creada antes de Usuarios
-CREATE TABLE Tipo_Usuarios (
-    Id_Tipo_Usuario INT PRIMARY KEY,
-    Descripcion VARCHAR(50)
-);
-
--- Insertar valores por defecto en Tipo_Usuarios
-INSERT INTO Tipo_Usuarios (Id_Tipo_Usuario, Descripcion) VALUES
-(1, 'Administrador'),
-(2, 'Supervisor'),
-(3, 'Usuario');
-
--- Tabla Usuarios
-CREATE TABLE Usuarios (
-    Id_Usuario INT PRIMARY KEY AUTO_INCREMENT,
-    Apellido VARCHAR(50),
-    Nombres VARCHAR(50),
-    Password VARCHAR(32),
-    Id_Tipo_Usuario INT DEFAULT 3,
-    FecHora_Registros TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FecHora_Modificacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    Id_Estado_Registro INT DEFAULT 1, 
-    FOREIGN KEY (Id_Tipo_Usuario) REFERENCES Tipo_Usuarios (Id_Tipo_Usuario)
-);
-
